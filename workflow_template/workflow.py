@@ -1,0 +1,73 @@
+"""Data pipeline / workflow.
+"""
+from base_stage import BaseStage
+from configuration import run_configuration
+from stage_download import DownloadStage
+
+import constants
+import shared_argument_parser
+
+from os.path import join
+
+import logging
+import argparse
+
+
+class Pipeline(BaseStage):
+    """A class for the whole data pipeline / workflow
+    """
+    logger = logging.getLogger("workflow")
+    stages = [DownloadStage()]
+    stages_dict = {stage.name:stage for stage in stages}
+    stages_executed = {stage.name:False for stage in stages}
+
+    def get_argument_parser(self):
+        """Returns argument parser for the pipeline / workflow.
+        """
+        parents = [stage.get_argument_parser() for stage in self.stages]
+        parents.append(shared_argument_parser.get_argument_parser())
+        parser = argparse.ArgumentParser(parents=parents, description="Data workflow / pipeline")
+
+        stage_names = [stage.name for stage in self.stages]
+        parser.add_argument("--stage", help="list of stages to execute in the workflow / pipeline",
+                            choices=stage_names, nargs="*", default=stage_names)
+        return parser
+
+    def pre_run(self, args):
+        """The function that is executed before the pipeline / workflow is run.
+
+        Args:
+            args: command line arguments that are passed to the workflow.
+        """
+        self.logger.info("=" * 40)
+        self.logger.info("-" * 40)
+        self.logger.info("Starting data pipeline / workflow")
+        self.logger.info("Stages to execute: {}".format(args.stage))
+        self.logger.info("-" * 40)
+        self.logger.info("=" * 40)
+
+    def run(self, args):
+        """Run the stages specified in the stage argument.
+
+        Args:
+            args: arguments that are passed to the workflow / pipeline.
+
+        Returns:
+            True if the workflow / pipeline execution succeded, False otherwise.
+        """
+        for stage in args.stage:
+            if self.stages_executed[stage]:
+                self.logger.warning("Executed stage '{}' more than once".format(stage))
+            if not self.stages_dict[stage].execute(args):
+                return False
+            self.stages_executed[stage] = True
+
+        return True
+
+if __name__ == "__main__":
+    pipeline = Pipeline()
+    argument_parser = pipeline.get_argument_parser()
+
+    args = argument_parser.parse_args()
+    run_configuration(args)
+    pipeline.execute(args)
