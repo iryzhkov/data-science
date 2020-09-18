@@ -11,7 +11,7 @@ from os.path import join
 def run_configuration(args):
     """Runs basic configuration for the workflow.
     """
-    logger = logging.getLogger("workflow").getChild("configuration")
+    logger = logging.getLogger("pipeline").getChild("configuration")
     format = "%(asctime)s:%(name)s:%(levelname)s:%(message)s"
 
     if args.debug:

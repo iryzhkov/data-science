@@ -7,9 +7,9 @@ import argparse
 import logging
 
 class BaseStage(metaclass=abc.ABCMeta):
-    """Base class for stage in the workflow
+    """Base class for stage in the pipeline / workflow
     """
-    logger = logging.getLogger("workflow").getChild("base_stage")
+    logger = logging.getLogger("pipeline").getChild("base_stage")
     name = "base"
 
     def execute(self, args):

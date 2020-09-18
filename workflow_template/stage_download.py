@@ -12,7 +12,7 @@ class DownloadStage(BaseStage):
     """Stage for downloading the data from the internet.
     """
     name = "download"
-    logger = logging.getLogger("workflow").getChild("download_stage")
+    logger = logging.getLogger("pipeline").getChild("download_stage")
 
     def pre_run(self, args):
         """The function that is executed before the stage is run.

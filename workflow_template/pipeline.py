@@ -16,7 +16,7 @@ import argparse
 class Pipeline(BaseStage):
     """A class for the whole data pipeline / workflow
     """
-    logger = logging.getLogger("workflow")
+    logger = logging.getLogger("pipeline")
     stages = [DownloadStage()]
     stages_dict = {stage.name:stage for stage in stages}
     stages_executed = {stage.name:False for stage in stages}
@@ -30,7 +30,7 @@ class Pipeline(BaseStage):
 
         stage_names = [stage.name for stage in self.stages]
         parser.add_argument("--stage", help="list of stages to execute in the workflow / pipeline",
-                            choices=stage_names, nargs="*", default=stage_names)
+                            choices=stage_names, nargs="+", default=stage_names)
         return parser
 
     def pre_run(self, args):
@@ -56,8 +56,9 @@ class Pipeline(BaseStage):
             True if the workflow / pipeline execution succeded, False otherwise.
         """
         for stage in args.stage:
+            self.logger.info("Executing stage '{}'".format(stage))
             if self.stages_executed[stage]:
-                self.logger.warning("Executed stage '{}' more than once".format(stage))
+                self.logger.warning("Executing stage '{}' more than once".format(stage))
             if not self.stages_dict[stage].execute(args):
                 return False
             self.stages_executed[stage] = True
