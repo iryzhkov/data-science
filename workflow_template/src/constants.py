@@ -3,5 +3,5 @@
 
 from os.path import dirname, join
 
-WORKFLOW_ROOT = dirname(__file__)
+WORKFLOW_ROOT = dirname(dirname(__file__))
 LOGGING_PATH = join(WORKFLOW_ROOT, "logs")
