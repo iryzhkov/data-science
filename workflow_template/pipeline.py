@@ -3,6 +3,8 @@
 from base_stage import BaseStage
 from configuration import run_configuration
 from stage_download import DownloadStage
+from stage_connect_sql import ConnectSqlStage
+from stage_disconnect_sql import DisconnectSqlStage
 
 import constants
 import shared_argument_parser
@@ -17,8 +19,6 @@ class Pipeline(BaseStage):
     """A class for the whole data pipeline / workflow
     """
     logger = logging.getLogger("pipeline")
-    stages_dict = {stage.name:stage for stage in stages}
-    stages_executed = {stage.name:False for stage in stages}
 
     def __init__(self, parent=None):
         """Init function for the pipeline.
@@ -27,7 +27,13 @@ class Pipeline(BaseStage):
             parent: parent stage.
         """
         self.parent = parent
-        self.stages = [DownloadStage(self)]
+        self.stages = [
+            ConnectSqlStage(self),
+            DownloadStage(self),
+            DisconnectSqlStage(self),
+        ]
+        self.stages_dict = {stage.name:stage for stage in self.stages}
+        self.stages_executed = {stage.name:False for stage in self.stages}
 
     def get_argument_parser(self):
         """Returns argument parser for the pipeline / workflow.
