@@ -12,6 +12,14 @@ class BaseStage(metaclass=abc.ABCMeta):
     logger = logging.getLogger("pipeline").getChild("base_stage")
     name = "base"
 
+    def __init__(self, parent=None):
+        """The init function.
+
+        Args:
+            parent: parent stage.
+        """
+        self.parent = parent
+
     def execute(self, args):
         """The function that is called from the outside to execute the stage.
 

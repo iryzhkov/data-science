@@ -17,9 +17,17 @@ class Pipeline(BaseStage):
     """A class for the whole data pipeline / workflow
     """
     logger = logging.getLogger("pipeline")
-    stages = [DownloadStage()]
     stages_dict = {stage.name:stage for stage in stages}
     stages_executed = {stage.name:False for stage in stages}
+
+    def __init__(self, parent=None):
+        """Init function for the pipeline.
+
+        Args:
+            parent: parent stage.
+        """
+        self.parent = parent
+        self.stages = [DownloadStage(self)]
 
     def get_argument_parser(self):
         """Returns argument parser for the pipeline / workflow.
