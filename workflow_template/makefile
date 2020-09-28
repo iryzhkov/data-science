@@ -4,9 +4,6 @@ PIP = pip3
 prep:
 	mkdir -p logs tmp data results
 
-download: prep
-	$(PYTHON) src/stage_gdrive_download.py
-
 run: prep
 	$(PYTHON) src/pipeline.py
 
