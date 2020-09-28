@@ -1,8 +1,13 @@
-
 PYTHON = python3
 PIP = pip3
 
-run:
+prep:
+	mkdir -p logs tmp data results
+
+download: prep
+	$(PYTHON) src/stage_gdrive_download.py
+
+run: prep
 	$(PYTHON) src/pipeline.py
 
 debug:
@@ -12,8 +17,16 @@ lint:
 	pylint src/
 
 install:
-	 $(PIP) install -r requirements.txt -t ./
+	 $(PIP) install -r requirements.txt
 
 clean:
 	find . -type f -name \*.pyc -exec rm {} \;
-	rm -rf dist *.egg-info .coverage .DS_Store logs/*
+	rm -rf dist *.egg-info .coverage .DS_Store logs tmp
+
+clean-data:
+	rm -rf data
+
+clean-results:
+	rm -rf results
+
+clean-full: clean clean-data clean-results
