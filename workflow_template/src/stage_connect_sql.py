@@ -38,7 +38,7 @@ class ConnectSqlStage(BaseStage):
         self.logger.info("Initiating connection")
 
         connection = sqlite3.connect(constants.DATABASE_FILE)
-        cursor = connection.cursor
+        cursor = connection.cursor()
 
         self.logger.info("Connection established")
 

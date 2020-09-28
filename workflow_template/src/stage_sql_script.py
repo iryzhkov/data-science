@@ -5,6 +5,8 @@ from configuration import run_configuration
 
 import constants
 
+from os.path import join
+
 import argparse
 import logging
 import sqlite3
@@ -48,6 +50,16 @@ class SqlScriptStage(BaseStage):
         if not self.parent:
             self.logger.warning("This stage cannot be executed on its own.")
             return False
+
+        filepath = join(constants.SQL_SCRIPTS_PATH, "{}.sql".format(self.sql_script))
+        self.logger.info("Lodaing the sql script")
+        with open (filepath, "r") as script_file:
+            scripts = "".join(script_file.readlines()).split(";")[:-1]
+            self.logger.info("Executing the sql script")
+            for script in scripts:
+                self.parent.sql_cursor.execute(script)
+                result = self.parent.sql_cursor.fetchall()
+                print(result)
 
         return True
 
