@@ -1,4 +1,4 @@
-"""Stage for connecting to the sql server.
+"""Stage that executes sql script.
 """
 from base_stage import BaseStage
 from configuration import run_configuration
@@ -10,11 +10,21 @@ import logging
 import sqlite3
 
 
-class ConnectSqlStage(BaseStage):
-    """Stage for connecting to sql servers.
+class SqlScriptStage(BaseStage):
+    """Stage executing SQL.
     """
-    name = "connect_sql"
-    logger = logging.getLogger("pipeline").getChild("sql")
+    name = "sql_script"
+    logger = logging.getLogger("pipeline").getChild("sql_script")
+
+    def __init__(self, parent=None, sql_script=None):
+        """Initializer for SQL script stage
+
+        Args:
+            parent: the parent stage
+            sql_script: name of the sql script to execute
+        """
+        self.parent = parent
+        self.sql_script = sql_script
 
     def pre_run(self, args):
         """The function that is executed before the stage is run.
@@ -23,7 +33,7 @@ class ConnectSqlStage(BaseStage):
             args: command line arguments that are passed to the stage.
         """
         self.logger.info("=" * 40)
-        self.logger.info("Executing connect SQL stage")
+        self.logger.info("Executing SQL script {}".format(self.sql_script))
         self.logger.info("-" * 40)
 
     def run(self, args):
@@ -35,20 +45,9 @@ class ConnectSqlStage(BaseStage):
         Returns:
             True if the stage execution succeded, False otherwise.
         """
-        self.logger.info("Initiating connection")
-
-        connection = sqlite3.connect(constants.DATABASE_FILE)
-        cursor = connection.cursor
-
-        self.logger.info("Connection established")
-
         if not self.parent:
-            self.logger.warning("This stage should not be executed on its own.")
-            connection.close()
-        else:
-            self.parent.sql_connection = connection
-            self.parent.sql_cursor = cursor
-
+            self.logger.warning("This stage cannot be executed on its own.")
+            return False
 
         return True
 
@@ -59,7 +58,7 @@ class ConnectSqlStage(BaseStage):
             args: command line arguments that are passed to the stage.
         """
         self.logger.info("-" * 40)
-        self.logger.info("Finished connect SQL stage")
+        self.logger.info("Finished SQL script {}".format(self.sql_script))
         self.logger.info("=" * 40)
 
     def get_argument_parser(self, use_shared_parser=False, add_help=False):
@@ -70,5 +69,5 @@ class ConnectSqlStage(BaseStage):
             add_help: whether to add help.
         """
         parser = self.get_base_argument_parser(use_shared_parser, add_help,
-                                               "Connect to SQL stage.")
+                                               "Execute {} SQL script.".format(self.sql_script))
         return parser

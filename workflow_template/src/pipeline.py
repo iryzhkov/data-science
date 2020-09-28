@@ -3,6 +3,7 @@
 from base_stage import BaseStage
 from configuration import run_configuration
 from stage_download import DownloadStage
+from stage_sql_script import SqlScriptStage
 from stage_connect_sql import ConnectSqlStage
 from stage_disconnect_sql import DisconnectSqlStage
 
@@ -30,6 +31,7 @@ class Pipeline(BaseStage):
         self.stages = [
             ConnectSqlStage(self),
             #DownloadStage(self),
+            SqlScriptStage(self, "demo_script"),
             DisconnectSqlStage(self),
         ]
         self.stages_dict = {stage.name:stage for stage in self.stages}

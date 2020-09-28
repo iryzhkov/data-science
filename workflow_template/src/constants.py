@@ -8,5 +8,6 @@ LOGGING_PATH = join(WORKFLOW_ROOT, "logs")
 OUTPUT_PATH = join(WORKFLOW_ROOT, "results")
 DATA_PATH = join(WORKFLOW_ROOT, "data")
 TMP_PATH = join(WORKFLOW_ROOT, "tmp")
+SQL_SCRIPTS_PATH = join(WORKFLOW_ROOT, "sql_scripts")
 
-DATABASE_FILE = join(DATA_PATH, "cpdp.db")
+DATABASE_FILE = join(DATA_PATH, "cpdb.sql")

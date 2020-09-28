@@ -5,7 +5,6 @@ from configuration import run_configuration
 
 import argparse
 import logging
-import time
 
 
 class DisconnectSqlStage(BaseStage):
@@ -38,8 +37,7 @@ class DisconnectSqlStage(BaseStage):
             self.logger.info("Since this stage was run on its own, there is nothing to disconnect.")
             return True
 
-        self.logger.info("Initiating disconnection")
-        time.sleep(1)
+        self.parent.sql_connection.close()
         self.logger.info("Disconnection successfull")
 
         return True
@@ -64,12 +62,3 @@ class DisconnectSqlStage(BaseStage):
         parser = self.get_base_argument_parser(use_shared_parser, add_help,
                                                "Disconnect from the SQL stage.")
         return parser
-
-
-if __name__ == "__main__":
-    disconnect_sql_stage = DisconnectSqlStage()
-    argument_parser = download_stage.get_argument_parser(True, True)
-
-    args = argument_parser.parse_args()
-    run_configuration(args)
-    disconnect_sql_stage.execute(args)
