@@ -80,10 +80,10 @@ class BaseStage(metaclass=abc.ABCMeta):
             add_help: whether to add help.
             description: description to use for the parser.
         """
-        parents = []
         if use_shared_parser:
-            parents=[shared_argument_parser.get_argument_parser(True)],
-        return argparse.ArgumentParser(parents=parents, add_help=add_help, description=description)
+            parents = [shared_argument_parser.get_argument_parser(True)]
+            return argparse.ArgumentParser(parents=parents, add_help=False, description=description)
+        return argparse.ArgumentParser(add_help=add_help, description=description)
 
     def get_argument_parser(self, use_shared_parser=False, add_help=False):
         """Returns Argument Parser to use for the stage.

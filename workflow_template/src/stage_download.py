@@ -3,8 +3,11 @@
 from base_stage import BaseStage
 from configuration import run_configuration
 
+import constants
+
 import argparse
 import logging
+import requests
 import time
 
 
@@ -27,7 +30,7 @@ class DownloadStage(BaseStage):
         self.logger.info("-" * 40)
 
     def run(self, args):
-        """Downloads the csv file from the url.
+        """Downloads the db file from the url.
 
         Args:
             args: arguments that are passed to the stage.
@@ -36,8 +39,11 @@ class DownloadStage(BaseStage):
             True if the stage execution succeded, False otherwise.
         """
         self.logger.info("Starting download")
-        time.sleep(1)
+        r = requests.get(args.url, allow_redirects=True)
         self.logger.info("Download finished")
+        self.logger.info("Saving results to the file")
+        open(constants.DATABASE_FILE, "wb").write(r.content)
+        self.logger.info("Saved database to the file.")
         return True
 
     def post_run(self, args):
@@ -47,7 +53,6 @@ class DownloadStage(BaseStage):
             args: command line arguments that are passed to the stage.
         """
         self.logger.info("-" * 40)
-        self.logger.info("Finished download stage")
         self.logger.info("=" * 40)
 
     def get_argument_parser(self, use_shared_parser=False, add_help=False):
@@ -59,7 +64,9 @@ class DownloadStage(BaseStage):
         """
         parser = self.get_base_argument_parser(use_shared_parser, add_help,
                                                "Download stage of the pipeline / workflow")
-        parser.add_argument("--url", help="url for data downloading.", default="www.google.com")
+        parser.add_argument("--url",
+                            help="url for data downloading.",
+                            default=constants.SQL_DB_FILE_URL)
         return parser
 
 

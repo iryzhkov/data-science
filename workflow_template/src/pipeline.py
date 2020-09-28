@@ -29,7 +29,7 @@ class Pipeline(BaseStage):
         self.parent = parent
         self.stages = [
             ConnectSqlStage(self),
-            DownloadStage(self),
+            #DownloadStage(self),
             DisconnectSqlStage(self),
         ]
         self.stages_dict = {stage.name:stage for stage in self.stages}
@@ -39,7 +39,7 @@ class Pipeline(BaseStage):
         """Returns argument parser for the pipeline / workflow.
         """
         parents = [stage.get_argument_parser() for stage in self.stages]
-        parents.append(shared_argument_parser.get_argument_parser())
+        parents.append(shared_argument_parser.get_argument_parser(False))
         parser = argparse.ArgumentParser(parents=parents, description="Data workflow / pipeline")
 
         stage_names = [stage.name for stage in self.stages]

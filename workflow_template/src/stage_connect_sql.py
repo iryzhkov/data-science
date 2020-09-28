@@ -3,6 +3,8 @@
 from base_stage import BaseStage
 from configuration import run_configuration
 
+import constants
+
 import argparse
 import logging
 import time
@@ -22,7 +24,6 @@ class ConnectSqlStage(BaseStage):
         """
         self.logger.info("=" * 40)
         self.logger.info("Executing connect SQL stage")
-        self.logger.info("Using following arguments:")
         self.logger.info("-" * 40)
 
     def run(self, args):
@@ -35,7 +36,6 @@ class ConnectSqlStage(BaseStage):
             True if the stage execution succeded, False otherwise.
         """
         self.logger.info("Initiating connection")
-        time.sleep(1)
         self.logger.info("Connection established")
 
         if not self.parent:
