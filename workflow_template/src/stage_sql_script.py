@@ -8,6 +8,7 @@ import constants
 from os.path import join
 
 import argparse
+import csv
 import logging
 import sqlite3
 
@@ -51,15 +52,20 @@ class SqlScriptStage(BaseStage):
             self.logger.warning("This stage cannot be executed on its own.")
             return False
 
-        filepath = join(constants.SQL_SCRIPTS_PATH, "{}.sql".format(self.sql_script))
+        script_filepath = join(constants.SQL_SCRIPTS_PATH, "{}.sql".format(self.sql_script))
+        output_filepath = join(constants.OUTPUT_PATH, "{}.csv".format(self.sql_script))
         self.logger.info("Lodaing the sql script")
-        with open (filepath, "r") as script_file:
+        with open(script_filepath, "r") as script_file:
             scripts = "".join(script_file.readlines()).split(";")[:-1]
             self.logger.info("Executing the sql script")
             for script in scripts:
                 self.parent.sql_cursor.execute(script)
-                result = self.parent.sql_cursor.fetchall()
-                print(result)
+                results = self.parent.sql_cursor.fetchall()
+
+                if results:
+                    self.logger.info("Saving execution result to the file.")
+                    with open(output_filepath, "w") as output_file:
+                        csv.writer(output_file).writerows(results)
 
         return True
 
