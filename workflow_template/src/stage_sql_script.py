@@ -19,14 +19,14 @@ class SqlScriptStage(BaseStage):
     name = "sql_script"
     logger = logging.getLogger("pipeline").getChild("sql_script")
 
-    def __init__(self, parent=None, sql_script=None):
+    def __init__(self, parent=None, name=None, sql_script=None):
         """Initializer for SQL script stage
 
         Args:
             parent: the parent stage
             sql_script: name of the sql script to execute
         """
-        self.parent = parent
+        super(SqlScriptStage, self).__init__(parent, name)
         self.sql_script = sql_script
 
     def pre_run(self, args):

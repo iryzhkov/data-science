@@ -12,7 +12,7 @@ class BaseStage(metaclass=abc.ABCMeta):
     logger = logging.getLogger("pipeline").getChild("base_stage")
     name = "base"
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, name=None):
         """The init function.
 
         Args:

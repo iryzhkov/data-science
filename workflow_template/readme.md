@@ -20,4 +20,4 @@ The pipeline can be executed in 2 ways:
 
 ### Logging
 
-This template uses logging library. The workflow generates log files that can be found in logs folder. Use logger.info / debug / error / warning instead of print for proper logging when creating new stages. 
+This template uses logging library. The workflow generates log files that can be found in logs folder. Use logger.info / debug / error / warning instead of print for proper logging when creating new stages.

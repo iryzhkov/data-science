@@ -2,10 +2,6 @@
 """
 from base_stage import BaseStage
 from configuration import run_configuration
-from stage_download import DownloadStage
-from stage_sql_script import SqlScriptStage
-from stage_connect_sql import ConnectSqlStage
-from stage_disconnect_sql import DisconnectSqlStage
 
 import constants
 import shared_argument_parser
@@ -21,19 +17,17 @@ class Pipeline(BaseStage):
     """
     logger = logging.getLogger("pipeline")
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, name=None, stages=None):
         """Init function for the pipeline.
 
         Args:
             parent: parent stage.
+            stages: a list of stages.
         """
-        self.parent = parent
-        self.stages = [
-            ConnectSqlStage(self),
-            #DownloadStage(self),
-            SqlScriptStage(self, "demo_script"),
-            DisconnectSqlStage(self),
-        ]
+        super(Pipeline, self).__init__(parent, name)
+        self.stages = stages
+        for stage in self.stages:
+            stage.parent = self
         self.stages_dict = {stage.name:stage for stage in self.stages}
         self.stages_executed = {stage.name:False for stage in self.stages}
 

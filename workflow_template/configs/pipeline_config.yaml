@@ -1,0 +1,6 @@
+---
+stages:
+- name: connect_sql
+- name: sql_script
+  sql_script: demo_script
+- name: disconnect_sql
