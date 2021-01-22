@@ -5,6 +5,8 @@ from configuration import run_configuration
 
 import constants
 
+from os.path import join
+
 import argparse
 import logging
 import sqlite3
@@ -15,6 +17,16 @@ class ConnectSqlStage(BaseStage):
     """
     name = "connect_sql"
     logger = logging.getLogger("pipeline").getChild("sql")
+
+    def __init__(self, parent=None, name=None, data_base_filename=None):
+        """Initializer for connect to sql stage.
+
+        Args:
+            parent: the parent stage
+            data_base_file: name of the db file.
+        """
+        super(ConnectSqlStage, self).__init__(parent, name)
+        self.data_base_filename = data_base_filename
 
     def pre_run(self, args):
         """The function that is executed before the stage is run.
@@ -37,7 +49,8 @@ class ConnectSqlStage(BaseStage):
         """
         self.logger.info("Initiating connection")
 
-        connection = sqlite3.connect(constants.DATABASE_FILE)
+        data_base_path = join(constants.DATA_PATH, self.data_base_filename)
+        connection = sqlite3.connect(data_base_path)
         cursor = connection.cursor()
 
         self.logger.info("Connection established")
@@ -48,7 +61,6 @@ class ConnectSqlStage(BaseStage):
         else:
             self.parent.sql_connection = connection
             self.parent.sql_cursor = cursor
-
 
         return True
 

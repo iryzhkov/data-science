@@ -1,6 +1,7 @@
 ---
 stages:
 - name: connect_sql
+  data_base_filename: database.db
 - name: sql_script
   sql_script: demo_script
 - name: disconnect_sql
